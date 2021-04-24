@@ -79,6 +79,7 @@ jobs:
       - run:
           name: front-end test
           command: |
+             cd frontend
              npm i
              npm run test
        
@@ -94,6 +95,7 @@ jobs:
       - run:
           name: back-end test
           command: |
+             cd backend
              npm i
              npm run test
             
