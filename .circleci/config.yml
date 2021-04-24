@@ -55,11 +55,11 @@ jobs:
           keys:
            -  "npm-packages"   
       - slack/notify:
-          channel: '#C01V8BSGL4V'
+          channel: 'C01V8BSGL4V'
           event: fail
           template: build_failed
       - slack/notify:
-          channel: '#C01V8BSGL4V'  
+          channel: 'C01V8BSGL4V'  
           event: pass
           template: success_build      
 
@@ -78,11 +78,11 @@ jobs:
              npm i
              npm run build
       - slack/notify:
-          channel: '#C01V8BSGL4V'
+          channel: 'C01V8BSGL4V'
           event: fail
           template: build_failed
       - slack/notify:
-          channel: '#C01V8BSGL4V'  
+          channel: 'C01V8BSGL4V'  
           event: pass
           template: success_build          
   test-frontend:
@@ -100,11 +100,11 @@ jobs:
              npm i
              npm run test
       - slack/notify:
-          channel: '#C01V8BSGL4V'
+          channel: 'C01V8BSGL4V'
           event: fail
           template: test_failed
       - slack/notify:
-          channel: '#C01V8BSGL4V'  
+          channel: 'C01V8BSGL4V'  
           event: pass
           template: success_test       
        
@@ -124,11 +124,11 @@ jobs:
              npm i
              npm run test
       - slack/notify:
-          channel: '#C01V8BSGL4V'
+          channel: 'C01V8BSGL4V'
           event: fail
           template: test_failed
       - slack/notify:
-          channel: '#C01V8BSGL4V'  
+          channel: 'C01V8BSGL4V'  
           event: pass
           template: success_test       
             
@@ -146,11 +146,11 @@ jobs:
              cd frontend
              npm audit fix --audit-level=critical --force
       - slack/notify:
-          channel: '#C01V8BSGL4V'
+          channel: 'C01V8BSGL4V'
           event: fail
           template: scan_failed
       - slack/notify:
-          channel: '#C01V8BSGL4V'  
+          channel: 'C01V8BSGL4V'  
           event: pass
           template: success_scan
 
@@ -168,11 +168,11 @@ jobs:
              cd backend
              npm audit fix --audit-level=critical --force
       - slack/notify:
-          channel: '#C01V8BSGL4V'
+          channel: 'C01V8BSGL4V'
           event: fail
           template: scan_backend_failed
       - slack/notify:
-          channel: '#C01V8BSGL4V'  
+          channel: 'C01V8BSGL4V'  
           event: pass
           template: success_scan_backend       
    
