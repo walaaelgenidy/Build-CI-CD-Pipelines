@@ -144,8 +144,7 @@ jobs:
           name: front-end scan
           command: |
              cd frontend
-             npm audit fix 
-      #        --audit-level=critical 
+             npm audit fix --audit-level=critical 
       # - slack/notify:
       #     channel: '#project'
       #     event: fail
@@ -167,8 +166,7 @@ jobs:
           name: back-end scan
           command: |
              cd backend
-             npm audit fix 
-      #        --audit-level=critical --force
+             npm audit fix  --audit-level=critical --force
       # - slack/notify:
       #     channel: '#project'
       #     event: fail
