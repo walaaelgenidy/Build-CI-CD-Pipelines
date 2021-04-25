@@ -180,8 +180,8 @@ jobs:
       - image:  amazon/aws-cli 
     steps:
       - checkout
-      - run: sudo apt-get update -y
-      - run: sudo apt-get install -y tar
+      - run:  apt-get update -y
+      - run:  apt-get install -y tar
       - run:
           name: Ensure back-end infrastructure exists
           command: |
