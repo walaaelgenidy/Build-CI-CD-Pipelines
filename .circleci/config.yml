@@ -200,12 +200,12 @@ jobs:
               --stack-name udapeople-front-end-"${CIRCLE_WORKFLOW_ID}" \
               --parameter-overrides ID=${CIRCLE_WORKFLOW_ID} 
               
-      - run:
-          name: Add back-end ip to ansible inventory
-          command: |
+      # - run:
+      #     name: Add back-end ip to ansible inventory
+      #     command: |
             
-            pwd
-            export BACKEND_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4) && echo $BACKEND_IP >> Udacity_Project_3/.circleci/ansible/inventory.txt
+      #       pwd
+      #       export BACKEND_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4) && echo $BACKEND_IP >> Udacity_Project_3/.circleci/ansible/inventory.txt
             
       - persist_to_workspace:
           root: ~/
@@ -213,25 +213,25 @@ jobs:
             - .circleci/ansible/inventory.txt
       #Here's where you will add some code to rollback on failure      
 
-  # configure-infrastructure:
-  #   docker:
-  #     - image: python:3.7-alpine3.11
-  #   steps:
-  #      - checkout
-  #      - add_ssh_keys:
-  #      #Ansible will have the creds it needs to access the EC2 instance
-  #         fingerprints:  ["2b:82:7c:33:c3:1b:2f:9a:23:71:51:10:fb:be:6d:a2"]
-  #      - attach_workspace:
-  #           at: /tmp/workspace
-  #      - run:
-  #           name: Install dependencies
-  #           command: |
-  #             apk add --update ansible  
+  configure-infrastructure:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+       - checkout
+       - add_ssh_keys:
+       #Ansible will have the creds it needs to access the EC2 instance
+          fingerprints:  ["2b:82:7c:33:c3:1b:2f:9a:23:71:51:10:fb:be:6d:a2"]
+       - attach_workspace:
+            at: /tmp/workspace
+       - run:
+            name: Install dependencies
+            command: |
+              apk add --update ansible  
             
-  #      - run:
-  #           name: Configure server
-  #           command: |
-  #             ansible-playbook -i inventory.txt configure-server.yml
+       - run:
+            name: Configure server
+            command: |
+              ansible-playbook -i inventory.txt configure-server.yml
             
       # Here's where you will add some code to rollback on failure      
 
@@ -365,8 +365,8 @@ workflows:
       - deploy-infrastructure:
           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
           
-      # - configure-infrastructure:
-      #     requires: [deploy-infrastructure]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
       # - run-migrations:
       #     requires: [configure-infrastructure]
       # - deploy-frontend:

@@ -1,9 +1,54 @@
-- name: Update/upgrade packages
+---
+- name: Upgrade all packages to the latest version
+  become: true
+  apt:
+    name: "*"
+    state: latest
+
+- name: Update all packages to the latest version
+  become: true
+  apt:
+    upgrade: dist
 
 - name: Install nodejs
-- name: Install pm2
+  become: true
+  gather_facts: true
+  vars:
+    NODEJS_VERSION: "13.8.0"
+    ansible_distribution_release: "xenial" #trusty
+  tasks:
+    - name: Install the gpg key for nodejs LTS
+      apt_key:
+        url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
+        state: present
+
+    - name: Install the nodejs LTS repos
+      apt_repository:
+        repo: "deb https://deb.nodesource.com/node_{{ NODEJS_VERSION }}.x {{ ansible_distribution_release }} main"
+        state: present
+        update_cache: yes
+
+    - name: Install the nodejs
+      apt:
+        name: nodejs
+        state: present
+
+    
+- name: NPM installation
+  become: true
+  shell: npm i
+
+- name: Install PM2
+  become: true
+  npm:
+     global: yes
+
+- name: Configure PM2 to run back-end server
+  become: true
+  shell: pm2 start all     
+
 - name: Configure environment variables
-   environment:
+   environment: 
       ENVIRONMENT: production
       TYPEORM_CONNECTION: postgres
       TYPEORM_ENTITIES: ./src/modules/domain/**/*.entity.ts
