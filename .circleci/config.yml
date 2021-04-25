@@ -203,32 +203,37 @@ jobs:
       - run:
           name: Add back-end ip to ansible inventory
           command: |
+            apt install -y curl
+            pwd
             export BACKEND_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4) && echo $BACKEND_IP >> Udacity_Project_3/.circleci/ansible/inventory.txt
             
       - persist_to_workspace:
           root: ~/
           paths:
-            - project/.circleci/ansible/inventory.txt
+            - Udacity_Project_3/.circleci/ansible/inventory.txt
       #Here's where you will add some code to rollback on failure      
 
-#   configure-infrastructure:
-#     docker:
-#       # Docker image here that supports Ansible
-#     steps:
-#       # Checkout code from git
-#       # Add ssh keys with fingerprint
-#       # attach workspace
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             # Your code here
-#             exit 1
-#       - run:
-#           name: Configure server
-#           command: |
-#             # Your code here
-#             exit 1
-#       # Here's where you will add some code to rollback on failure      
+  # configure-infrastructure:
+  #   docker:
+  #     - image: python:3.7-alpine3.11
+  #   steps:
+  #      - checkout
+  #      - add_ssh_keys:
+  #      #Ansible will have the creds it needs to access the EC2 instance
+  #         fingerprints:  ["2b:82:7c:33:c3:1b:2f:9a:23:71:51:10:fb:be:6d:a2"]
+  #      - attach_workspace:
+  #           at: /tmp/workspace
+  #      - run:
+  #           name: Install dependencies
+  #           command: |
+  #             apk add --update ansible  
+            
+  #      - run:
+  #           name: Configure server
+  #           command: |
+  #             ansible-playbook -i inventory.txt configure-server.yml
+            
+      # Here's where you will add some code to rollback on failure      
 
 #   run-migrations:
 #     docker:
