@@ -200,16 +200,16 @@ jobs:
               --stack-name udapeople-front-end-"${CIRCLE_WORKFLOW_ID}" \
               --parameter-overrides ID=${CIRCLE_WORKFLOW_ID} 
               
-      # - run:
-      #     name: Add back-end ip to ansible inventory
-      #     command: |
-      #       # Your code here
+      - run:
+          name: Add back-end ip to ansible inventory
+          command: |
+            export BACKEND_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4) && echo $BACKEND_IP >> /.circleci/ansible/inventory.txt
             
-      # - persist_to_workspace:
-      #     root: ~/
-      #     paths:
-      #       - project/.circleci/ansible/inventory.txt
-      # Here's where you will add some code to rollback on failure      
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.circleci/ansible/inventory.txt
+      #Here's where you will add some code to rollback on failure      
 
 #   configure-infrastructure:
 #     docker:
