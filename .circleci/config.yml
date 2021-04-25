@@ -211,7 +211,7 @@ jobs:
       - persist_to_workspace:
           root: ~/
           paths:
-            - Udacity_Project_3/.circleci/ansible/inventory.txt
+            - .circleci/ansible/inventory.txt
     #  - destroy_environment: #only executes if the job fails
                
 
