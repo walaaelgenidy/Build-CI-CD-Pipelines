@@ -190,7 +190,7 @@ jobs:
               --tags project=udapeople \
               --stack-name udapeople-back-end-"${CIRCLE_WORKFLOW_ID}" \
               --parameter-overrides ID=${CIRCLE_WORKFLOW_ID} 
-              exit 1
+              
       - run:
           name: Ensure front-end infrastructure exist
           command: |
@@ -199,7 +199,7 @@ jobs:
               --tags project=udapeople \
               --stack-name udapeople-front-end-"${CIRCLE_WORKFLOW_ID}" \
               --parameter-overrides ID=${CIRCLE_WORKFLOW_ID} 
-              exit 1
+              
       # - run:
       #     name: Add back-end ip to ansible inventory
       #     command: |
