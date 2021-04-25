@@ -2,18 +2,19 @@ version: 2.1
 # orbs:
 #   slack: circleci/slack@4.4.0
 
-# commands:
-#   destroy-environment:
-#     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
-#     parameters:
-#       # Add parameter here   
-#     steps:
-#       - run:
-#           name: Destroy environments
-#           when: on_fail
-#           command: |
-#             # Your code here
-#             exit 1
+commands:
+  destroy-environment:
+    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
+    parameters:
+       CIRCLE_WORKFLOW_ID:
+        type: String  
+    steps:
+      - run:
+          name: Destroy environments
+          when: on_fail
+          command: |
+            aws cloudformation delete-stack --stack-name udapeople-back-end-<< parameters.CIRCLE_WORKFLOW_ID >>
+            aws cloudformation delete-stack --stack-name udapeople-front-end-<< parameters.CIRCLE_WORKFLOW_ID >>
 
   # revert-migrations:
   #   description: Revert the last migration if successfully run in the current workflow.
@@ -182,6 +183,7 @@ jobs:
       - image:  amazon/aws-cli 
     steps:
       - checkout
+      - run: yum -y install tar gzip
       - run:
           name: Ensure back-end infrastructure exists
           command: |
@@ -213,7 +215,9 @@ jobs:
           root: ~/
           paths:
             - .circleci/ansible/inventory.txt
-      #Here's where you will add some code to rollback on failure      
+      - destroy_environment: #only executes if the job fails
+         CIRCLE_WORKFLOW_ID : "${CIRCLE_WORKFLOW_ID}"
+         when: on_fail    
 
   configure-infrastructure:
     docker:
