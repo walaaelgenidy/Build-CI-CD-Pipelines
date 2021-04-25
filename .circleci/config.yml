@@ -207,7 +207,7 @@ jobs:
             \
                   --query 'Reservations[*].Instances[*].PublicIpAddress' \
                   --filters "Name=tag:project,Values=udapeople" \
-                  --output text >> inventory
+                  --output text >> .circleci/ansible/inventory
                         
       - persist_to_workspace:
           root: ~/
@@ -239,26 +239,26 @@ jobs:
 
 #   run-migrations:
 #     docker:
-#       # Docker image here that supports NodeJS
+#       - image: circleci/node:13.8.0
 #     steps:
-#       # Checkout code from git
+#       - checkout
 #       - run:
 #           name: Run migrations
 #           command: |
 #             # Your code here
-#             exit 1
+#             
 #       - run:
 #           name: Send migration results to memstash
 #           command: |
 #             # Your code here
-#             exit 1
+#             
 #      # Here's where you will add some code to rollback on failure      
 
 #   deploy-frontend:
 #     docker:
-#       # Docker image here that supports AWS CLI
+#       - image:  amazon/aws-cli
 #     steps:
-#       # Checkout code from git
+#       - checkout
 #       - run:
 #           name: Install dependencies
 #           command: |
@@ -279,9 +279,12 @@ jobs:
 #     docker:
 #       # Docker image here that supports Ansible
 #     steps:
-#       # Checkout code from git
-#       # Add ssh keys with fingerprint
-#       # attach workspace
+#       - checkout
+#        - add_ssh_keys:
+#         #Ansible will have the creds it needs to access the EC2 instance
+#           fingerprints:  ["2b:82:7c:33:c3:1b:2f:9a:23:71:51:10:fb:be:6d:a2"]
+#        - attach_workspace:
+#             at: /tmp/workspace
 #       - run:
 #           name: Install dependencies
 #           command: |
@@ -294,13 +297,13 @@ jobs:
 
 #   smoke-test:
 #     docker:
-#       # Lightweight Docker image 
+#       - image: alpine:latest 
 #     steps:
-#       # Checkout code from git
+#       - checkout
 #       - run:
 #           name: Install dependencies
 #           command: |
-#             # your code here
+#               apk add --update curl
 #       - run:
 #           name: Get backend url
 #           command: |
@@ -317,9 +320,9 @@ jobs:
 
 #   cloudfront-update:
 #     docker:
-#       # Docker image here that supports AWS CLI
+#       - image:  amazon/aws-cli
 #     steps:
-#       # Checkout code from git
+#       - checkout
 #       - run:
 #           name: Install dependencies
 #           command: |
@@ -334,7 +337,7 @@ jobs:
 #     docker:
 #       # Docker image here
 #     steps:
-#       # Checkout code from git
+#       - checkout
 #       - run:
 #           name: Get old stack workflow id
 #           command: |
