@@ -200,13 +200,15 @@ jobs:
               --stack-name udapeople-front-end-"${CIRCLE_WORKFLOW_ID}" \
               --parameter-overrides ID=${CIRCLE_WORKFLOW_ID} 
               
-      # - run:
-      #     name: Add back-end ip to ansible inventory
-      #     command: |
-            
-      #       pwd
-      #       export BACKEND_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4) && echo $BACKEND_IP >> Udacity_Project_3/.circleci/ansible/inventory.txt
-            
+      - run:
+          name: Add back-end ip to ansible inventory
+          command: |
+            aws ec2 describe-instances \
+            \
+                  --query 'Reservations[*].Instances[*].PublicIpAddress' \
+                  --filters "Name=tag:project,Values=udapeople" \
+                  --output text >> inventory
+                        
       - persist_to_workspace:
           root: ~/
           paths:
