@@ -48,7 +48,7 @@
   shell: pm2 start all     
 
 - name: Configure environment variables
-   environment: 
+    environment: 
       ENVIRONMENT: production
       TYPEORM_CONNECTION: postgres
       TYPEORM_ENTITIES: ./src/modules/domain/**/*.entity.ts
