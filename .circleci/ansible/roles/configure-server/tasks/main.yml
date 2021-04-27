@@ -20,7 +20,8 @@
     state: present   
 
 - name: Configure environment variables
-  environment: production
+  environment:
+      ENVIRONMENT: production
       TYPEORM_CONNECTION: postgres
       TYPEORM_ENTITIES: ./src/modules/domain/**/*.entity.ts
       TYPEORM_HOST: database-1.cuxnzhvbpvrv.us-east-2.rds.amazonaws.com
