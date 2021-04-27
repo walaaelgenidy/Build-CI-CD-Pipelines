@@ -25,11 +25,13 @@
     state: present   
  
 - name: Executing node
+  become: true
   shell: |
     pm2 start --name backend-server ~/backend -f npm -- run start
           
 
 - name: Configure environment variables
+  become: true
   environment:
       ENVIRONMENT: production
       TYPEORM_CONNECTION: postgres
