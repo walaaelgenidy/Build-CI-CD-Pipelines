@@ -205,7 +205,7 @@ jobs:
             aws ec2 describe-instances \
             \
                   --query 'Reservations[*].Instances[*].PublicIpAddress' \
-                  --filters "Name=tag:project,Values=udapeople" \
+                  --filters "Key=Name,Value=backend-${CIRCLE_WORKFLOW_ID}" \
                   --output text >> .circleci/ansible/inventory
       - run: cat   .circleci/ansible/inventory.txt                                 
       - persist_to_workspace:
