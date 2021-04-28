@@ -308,15 +308,28 @@ jobs:
 #       - run:
 #           name: Get backend url
 #           command: |
-#             # your code here
+#             export API_URL="http://${BACKEND_IP}:3030"
+#             echo "${API_URL}"
 #       - run:
 #           name: Backend smoke test.
 #           command: |
-#             # your code here
+#            
+              # if curl -s --head ${API_URL} 
+              # then
+              #  return 0
+              # else
+              #  return 1
+              # fi
 #       - run:
 #           name: Frontend smoke test.
 #           command: |
-#             # your code here
+              #  URL="https://blog.udacity.com/"
+              # if curl -s --head ${URL} 
+              # then
+              #  return 0
+              # else
+              #  return 1
+              # fi
 #       # Here's where you will add some code to rollback on failure  
 
 #   cloudfront-update:

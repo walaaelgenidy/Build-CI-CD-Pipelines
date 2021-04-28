@@ -28,10 +28,7 @@
   become: true
   shell: |
     pm2 start --name backend-server ~/backend -f npm -- run start
-          
 
-- name: Configure environment variables
-  become: true
   environment:
       ENVIRONMENT: production
       TYPEORM_CONNECTION: postgres
@@ -40,4 +37,4 @@
       TYPEORM_PORT: 5432
       TYPEORM_USERNAME: masterUsername 
       TYPEORM_PASSWORD: 123456789
-      TYPEORM_DATABASE: database-1
+      TYPEORM_DATABASE: database-1  
