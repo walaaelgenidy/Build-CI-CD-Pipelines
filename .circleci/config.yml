@@ -225,7 +225,7 @@ jobs:
        #Ansible will have the creds it needs to access the EC2 instance
           fingerprints:  ["2b:82:7c:33:c3:1b:2f:9a:23:71:51:10:fb:be:6d:a2"]
        - attach_workspace:
-            at: ~/project/.circleci/ansible/inventory.txt
+            at: /tmp/workspace
        - run:
             name: Install dependencies
             command: |
