@@ -27,7 +27,7 @@
 - name: Executing node
   become: true
   shell: |
-    pm2 start --name backend-server ~/backend -f npm -- run start
+    pm2 start main.js --name backend-server ~/backend/dist -f  
 
   environment:
       ENVIRONMENT: production

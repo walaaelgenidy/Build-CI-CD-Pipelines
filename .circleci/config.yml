@@ -44,6 +44,8 @@ jobs:
              cd frontend
              npm i
              npm run build
+             cd dist
+             ls
            
       - save_cache:
           paths: 
@@ -74,7 +76,9 @@ jobs:
           command: |
              cd backend
              npm i
-             npm run build
+             npm run build 
+             cd dist
+             ls
       # - slack/notify:
       #     channel: '#project'
       #     event: fail
