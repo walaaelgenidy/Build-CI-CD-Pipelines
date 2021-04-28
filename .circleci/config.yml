@@ -251,6 +251,7 @@ jobs:
           name: Run migrations
           command: |
             cd backend
+            npm i
             npm run  premigrations
             npm run migrations
                        
@@ -266,26 +267,29 @@ jobs:
            
      # Here's where you will add some code to rollback on failure      
 
-#   deploy-frontend:
-#     docker:
-#       - image:  amazon/aws-cli
-#     steps:
-#       - checkout
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             # your code here
-#       - run:
-#           name: Get backend url
-#           command: |
-#             # your code here
-#             export API_URL="http://${BACKEND_IP}:3030"
-#             echo "${API_URL}"
-#       - run:
-#           name: Deploy frontend objects
-#           command: |
-#             # your code here
-#       # Here's where you will add some code to rollback on failure      
+  deploy-frontend:
+    docker:
+      - image:  amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            # your code here
+      - run:
+          name: Get backend url
+          command: |
+            BACKEND_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)   
+            export API_URL="http://${BACKEND_IP}:3030"
+            echo "${API_URL}"
+      - run:
+          name: Deploy frontend objects
+          command: |
+            cd frontend
+            npm run build
+      - run: aws s3 sync . s3://"${CIRCLE_WORKFLOW_ID}" --delete
+
+      # Here's where you will add some code to rollback on failure      
                     
 #   deploy-backend:
 #     docker:
@@ -343,20 +347,20 @@ jobs:
               # fi
 #       # Here's where you will add some code to rollback on failure  
 
-#   cloudfront-update:
-#     docker:
-#       - image:  amazon/aws-cli
-#     steps:
-#       - checkout
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             # your code here
-#       - run: |
-            # aws cloudformation deploy \
-            # --template-file cloudfront.yml \
-            # --stack-name cloudfront \
-            # --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID}"
+  cloudfront-update:
+    docker:
+      - image:  amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            # your code here
+      - run: |
+            aws cloudformation deploy \
+            --template-file cloudfront.yml \
+            --stack-name cloudfront \
+            --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID}"
 #       # Here's where you will add some code to rollback on failure  
 
 # cleanup:
