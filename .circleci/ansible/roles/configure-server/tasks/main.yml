@@ -30,12 +30,6 @@
     pm2 start  npm -- run start:prod
   environment:
       ENVIRONMENT: production
-      AWS_ACCESS_KEY_ID: AKIA5F6LQW2IPA7YUDPO
-      AWS_SECRET_ACCESS_KEY: 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
-      AWS_DEFAULT_REGION: us-east-2
-      TYPEORM_CONNECTION: postgres
-      TYPEORM_MIGRATIONS_DIR: ./src/migrations
-      TYPEORM_MIGRATIONS: ./src/migrations/*.ts
       TYPEORM_CONNECTION: postgres
       TYPEORM_ENTITIES: ./src/modules/domain/**/*.entity.ts
       TYPEORM_HOST: database-1.cuxnzhvbpvrv.us-east-2.rds.amazonaws.com
