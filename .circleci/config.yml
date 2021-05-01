@@ -15,8 +15,7 @@ version: 2.1
 
   # revert-migrations:
   #   description: Revert the last migration if successfully run in the current workflow.
-  #   parameters:
-  #     # Add parameter here     
+       
   #   steps:
   #     - run:
   #         name: Revert migrations
@@ -26,10 +25,10 @@ version: 2.1
   #           SUCCESS = 1
   #           if(( $SUCCESS==1 )); 
   #           then
-  #           #  cd ~/project/backend
-  #           #  npm install
-  #           #  Add revert code here. You can find this in the Getting Started section.
-  #             exit 1
+  #             cd ~/project/backend
+  #             npm install
+  #             cd backend
+  #             npm run migrations:revert
   #           fi
             
 jobs:
@@ -109,7 +108,6 @@ jobs:
       #     channel: '#project'  
       #     event: pass
       #     template: success_test       
-       
                 
   test-backend:
      docker:
@@ -210,16 +208,21 @@ jobs:
             \
                   --query 'Reservations[*].Instances[*].PublicIpAddress' \
                   --filters "Name=tag:project,Values=udapeople" \
-                  --output text >> .circleci/ansible/inventory.txt
-      - run: cat   .circleci/ansible/inventory.txt                         
+                  export BACKEND_IP=$( --output text >> .circleci/ansible/inventory.txt) && echo $BACKEND_IP
+                  
+      - run: cat   .circleci/ansible/inventory.txt
+      - run:
+          command: |
+             curl -H "Content-Type: text/plain"  \
+             -H "token: 8d7a2579-08d6-4634-ab0f-9991b68afb95"  \
+             --request PUT --data "$BACKEND_IP" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID}                         
       - persist_to_workspace:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
             
     #  - destroy_environment: #only executes if the job fails
-               
-
+ 
   configure-infrastructure:
     docker:
       - image: python:3.7-alpine3.11
@@ -260,7 +263,7 @@ jobs:
           command: |
                if  grep "has been executed successfully"
                then
-                return migration_${CIRCLE_WORKFLOW_ID}
+                curl -H "token: 8d7a2579-08d6-4634-ab0f-9991b68afb95" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID}
                else
                 return 0
                fi
@@ -291,61 +294,61 @@ jobs:
 
       # Here's where you will add some code to rollback on failure      
                     
-#   deploy-backend:
-#     docker:
-#       # Docker image here that supports Ansible
-#     steps:
-#       - checkout
-#        - add_ssh_keys:
-#         #Ansible will have the creds it needs to access the EC2 instance
-#           fingerprints:  ["2b:82:7c:33:c3:1b:2f:9a:23:71:51:10:fb:be:6d:a2"]
-#        - attach_workspace:
-#             at: /tmp/workspace
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             # your code here
-#       - run:
-#           name: Deploy backend
-#           command: |
-#             # your code here
-#       # Here's where you will add some code to rollback on failure  
+  deploy-backend:
+    docker:
+      # Docker image here that supports Ansible
+    steps:
+       - checkout
+       - add_ssh_keys:
+        #Ansible will have the creds it needs to access the EC2 instance
+          fingerprints:  ["2b:82:7c:33:c3:1b:2f:9a:23:71:51:10:fb:be:6d:a2"]
+       - attach_workspace:
+            at: ~/
+       - run:
+          name: Install dependencies
+          command: |
+            # your code here
+       - run:
+          name: Deploy backend
+          command: |
+            # your code here
+      # Here's where you will add some code to rollback on failure  
 
-#   smoke-test:
-#     docker:
-#       - image: alpine:latest 
-#     steps:
-#       - checkout
-#       - run:
-#           name: Install dependencies
-#           command: |
-#               apk add --update curl
-#       - run:
-#           name: Get backend url
-#           command: |
-#             export API_URL="http://${BACKEND_IP}:3030"
-#             echo "${API_URL}"
-#       - run:
-#           name: Backend smoke test.
-#           command: |
-#            
-              # if curl -s --head ${API_URL} 
-              # then
-              #  return 0
-              # else
-              #  return 1
-              # fi
-#       - run:
-#           name: Frontend smoke test.
-#           command: |
-              #  URL="https://blog.udacity.com/"
-              # if curl -s ${URL} | grep "Welcome" 
-              # then
-              #  return 0
-              # else
-              #  return 1
-              # fi
-#       # Here's where you will add some code to rollback on failure  
+  smoke-test:
+    docker:
+      - image: alpine:latest 
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+              apk add --update curl
+      - run:
+          name: Get backend url
+          command: |
+            export API_URL="http://${BACKEND_IP}:3030"
+            echo "${API_URL}"
+      - run:
+          name: Backend smoke test.
+          command: |
+           
+              if curl -s --head ${API_URL} 
+              then
+               return 0
+              else
+               return 1
+              fi
+      - run:
+          name: Frontend smoke test.
+          command: |
+                URL="http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website-us-east-2.amazonaws.com""
+                if curl -s ${URL} | grep "Welcome" 
+                then
+                return 0
+                else
+                return 1
+                fi
+      # Here's where you will add some code to rollback on failure  
 
   cloudfront-update:
     docker:
