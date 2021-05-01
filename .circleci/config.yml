@@ -208,8 +208,8 @@ jobs:
             \
                   --query 'Reservations[*].Instances[*].PublicIpAddress' \
                   --filters "Name=tag:project,Values=udapeople" \
-                  export BACKEND_IP=$( --output text >> .circleci/ansible/inventory.txt) && echo $BACKEND_IP
-                  
+                  --output text >> .circleci/ansible/inventory.txt 
+                           
       - run: cat   .circleci/ansible/inventory.txt
       - run:
           command: |
@@ -257,11 +257,15 @@ jobs:
             npm i
             npm run  premigrations
             npm run migrations
-                       
+
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.circleci/migrations.txt              
       - run:
           name: Send migration results to memstash
           command: |
-               if  grep "has been executed successfully"
+               if  grep "has been executed successfully" ~/.circleci/migrations.txt 
                then
                 curl -H "token: 8d7a2579-08d6-4634-ab0f-9991b68afb95" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID}
                else
