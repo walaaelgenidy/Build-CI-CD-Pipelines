@@ -1,0 +1,6 @@
+---
+- name: "compiled back-end files"
+  become: true
+  copy:
+    src: /project/.circleci/backend/dist
+    dest: /

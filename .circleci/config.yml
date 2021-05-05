@@ -230,7 +230,7 @@ jobs:
        - checkout
        - add_ssh_keys:
        #Ansible will have the creds it needs to access the EC2 instance
-          fingerprints:  ["2b:82:7c:33:c3:1b:2f:9a:23:71:51:10:fb:be:6d:a2"]
+          fingerprints:  ["f5:f5:9e:fb:f7:5a:47:8a:ea:d9:b3:df:ef:dc:c8:4d"]
        - attach_workspace:
             at: ~/
        - run:
@@ -279,7 +279,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            # your code here
+             apk add --update curl
       - run:
           name: Get backend url
           command: |
@@ -295,25 +295,25 @@ jobs:
 
       # Here's where you will add some code to rollback on failure      
                     
-  # deploy-backend:
-  #   docker:
-  #     # Docker image here that supports Ansible
-  #   steps:
-  #      - checkout
-  #      - add_ssh_keys:
-  #       #Ansible will have the creds it needs to access the EC2 instance
-  #         fingerprints:  ["2b:82:7c:33:c3:1b:2f:9a:23:71:51:10:fb:be:6d:a2"]
-  #      - attach_workspace:
-  #           at: ~/
-  #      - run:
-  #         name: Install dependencies
-  #         command: |
-  #           # your code here
-  #      - run:
-  #         name: Deploy backend
-  #         command: |
-  #           # your code here
-  #     # Here's where you will add some code to rollback on failure  
+  deploy-backend:
+    docker:
+      - image: ansible/ansible:default
+    steps:
+       - checkout
+       - add_ssh_keys:
+        #Ansible will have the creds it needs to access the EC2 instance
+          fingerprints:  ["f5:f5:9e:fb:f7:5a:47:8a:ea:d9:b3:df:ef:dc:c8:4d"]
+       - attach_workspace:
+            at: ~/
+       - run:
+          name: Install dependencies
+          command: |
+            apk add --update ansible
+       - run:
+          name: Deploy backend
+          command: |
+            ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml
+      # Here's where you will add some code to rollback on failure  
 
   smoke-test:
     docker:
@@ -332,7 +332,7 @@ jobs:
       - run:
           name: Backend smoke test.
           command: |
-           
+            
               if curl -s --head ${API_URL} 
               then
                return 0
@@ -342,7 +342,7 @@ jobs:
       - run:
           name: Frontend smoke test.
           command: |
-                URL="http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website-us-east-2.amazonaws.com""
+                URL="http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website-us-east-2.amazonaws.com"
                 if curl -s ${URL} | grep "Welcome" 
                 then
                 return 0
@@ -365,26 +365,33 @@ jobs:
             --template-file cloudfront.yml \
             --stack-name cloudfront \
             --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID}"
-#       # Here's where you will add some code to rollback on failure  
+      # Here's where you will add some code to rollback on failure  
 
-# cleanup:
-#     docker:
-#       # Docker image here
-#     steps:
-#       - checkout
-#       - run:
-#           name: Get old stack workflow id
-#           command: |
-#             # your code here
-#             export OldWorkflowID="the id here"
-#             export STACKS=[] #put the list of stacks here
-#       - run:
-#           name: Remove old stacks and files
-#           command: |
-#             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
-#             then
-#               # your code here
-#             fi
+cleanup:
+    docker:
+     - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Get old stack workflow id
+          command: |
+            export OldWorkflowID=$(aws cloudformation \
+            list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
+            --no-paginate --output text)
+
+            export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
+            --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
+            
+      - run:
+          name: Remove old stacks and files
+          command: |
+            if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
+            then
+              aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive 
+              aws cloudformation delete-stack --stack-name "udapeople-front-end-${OldWorkflowID}"
+              aws cloudformation delete-stack --stack-name  "udapeople-back-end-${OldWorkflowID}"
+
+            fi
             
 
 workflows:
@@ -408,13 +415,13 @@ workflows:
           requires: [deploy-infrastructure]
       - run-migrations:
           requires: [configure-infrastructure]
-      # - deploy-frontend:
-      #     requires: [run-migrations]
-      # - deploy-backend:
-      #     requires: [run-migrations]
-      # - smoke-test:
-      #     requires: [deploy-backend, deploy-frontend]
-      # - cloudfront-update:
-      #     requires: [smoke-test]
-      # - cleanup:
-      #     requires: [cloudfront-update]
+      - deploy-frontend:
+          requires: [run-migrations]
+      - deploy-backend:
+          requires: [run-migrations]
+      - smoke-test:
+          requires: [deploy-backend, deploy-frontend]
+      - cloudfront-update:
+          requires: [smoke-test]
+      - cleanup:
+          requires: [cloudfront-update]
