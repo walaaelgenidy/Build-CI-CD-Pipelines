@@ -258,7 +258,7 @@ jobs:
             npm i
             npm audit fix 
             npm run build
-            npm run migrations:create --name=DB
+            npm run migrations:create  db
             npm run migrations
            
       - run:
