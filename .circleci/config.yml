@@ -390,7 +390,6 @@ cleanup:
               aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive 
               aws cloudformation delete-stack --stack-name "udapeople-front-end-${OldWorkflowID}"
               aws cloudformation delete-stack --stack-name  "udapeople-back-end-${OldWorkflowID}"
-
             fi
             
 
@@ -421,7 +420,7 @@ workflows:
           requires: [run-migrations]
       - smoke-test:
           requires: [deploy-backend, deploy-frontend]
-      - cloudfront-update:
-          requires: [smoke-test]
-      - cleanup:
-          requires: [cloudfront-update]
+      # - cloudfront-update:
+      #     requires: [smoke-test]
+      # - cleanup:
+      #     requires: [cloudfront-update]
