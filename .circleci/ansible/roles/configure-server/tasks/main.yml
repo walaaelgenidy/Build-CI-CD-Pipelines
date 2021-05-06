@@ -35,5 +35,5 @@
       TYPEORM_HOST: database.c8wmcjqyrsbv.us-east-2.rds.amazonaws.com
       TYPEORM_PORT: 5432
       TYPEORM_USERNAME: Masterusername 
-      TYPEORM_PASSWORD: 123456789
+      TYPEORM_PASSWORD: walaa1997
       TYPEORM_DATABASE: database
