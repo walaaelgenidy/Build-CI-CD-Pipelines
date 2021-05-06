@@ -254,7 +254,7 @@ jobs:
           name: Run migrations
           command: |
             cd backend
-            npm run migrations >> migration_output.txt
+            npm run migrations > migration_output.txt
             cat migration_output.txt
             
       - run:
