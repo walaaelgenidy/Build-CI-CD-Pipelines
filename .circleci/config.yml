@@ -280,7 +280,7 @@ jobs:
                fi
            
      # Here's where you will add some code to rollback on failure      
-      - revert-migrations
+     # - revert-migrations
   deploy-frontend:
     docker:
       - image:  amazon/aws-cli
@@ -295,19 +295,22 @@ jobs:
           command: |
             BACKEND_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)   
             export API_URL="http://${BACKEND_IP}:3030"
-            echo "${API_URL}"
+            echo "${API_URL}" >> "frontend/.env"
       - run:
           name: Deploy frontend objects
           command: |
             cd frontend
             npm run build
-      - run: aws s3 sync . s3://"${CIRCLE_WORKFLOW_ID}" --delete
-
+      - run: aws s3 cp ./frontend/dist s3://udapeople-${CIRCLE_WORKFLOW_ID}/ --recursive
+ 
       # Here's where you will add some code to rollback on failure      
-                    
+      # - destroy-environment:
+      #     workflow_id: ${CIRCLE_WORKFLOW_ID}
+      # - revert-migrations
+
   deploy-backend:
     docker:
-      - image: ansible/ansible:default
+      - image: python:3.7-alpine3.11
     steps:
        - checkout
        - add_ssh_keys:
@@ -319,25 +322,39 @@ jobs:
           name: Install dependencies
           command: |
             apk add --update ansible
+            apk add tar gzip
+            apk add curl
+            apk add gzip
+            apk add nodejs
+            apk add npm
+            pip install awscli
+       - attach_workspace:
+          at: ~/     
        - run:
           name: Deploy backend
           command: |
+            cd .circleci/ansible
             ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml
       # Here's where you will add some code to rollback on failure  
+      #  - destroy-environment:
+      #     workflow_id: ${CIRCLE_WORKFLOW_ID}
+      #  - revert-migrations
 
   smoke-test:
     docker:
-      - image: alpine:latest 
+       - image: python:3.7-alpine3.11
     steps:
       - checkout
       - run:
           name: Install dependencies
           command: |
               apk add --update curl
+              apk add tar gzip 
+              pip install awscli
       - run:
           name: Get backend url
           command: |
-            export API_URL="http://${BACKEND_IP}:3030"
+            export API_URL="http://${BACKEND_IP}:3030/api/status"
             echo "${API_URL}"
       - run:
           name: Backend smoke test.
@@ -360,7 +377,9 @@ jobs:
                 return 1
                 fi
       # Here's where you will add some code to rollback on failure  
-
+      # - destroy-environment:
+      #     workflow_id: ${CIRCLE_WORKFLOW_ID}
+      # - revert-migrations
   cloudfront-update:
     docker:
       - image:  amazon/aws-cli
@@ -369,13 +388,18 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            # your code here
+            yum -y install tar gzip
+            curl -sL https://rpm.nodesource.com/setup_lts.x | bash -
+            yum -y install nodejs
       - run: |
             aws cloudformation deploy \
             --template-file cloudfront.yml \
             --stack-name cloudfront \
             --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID}"
-      # Here's where you will add some code to rollback on failure  
+      # Here's where you will add some code to rollback on failure 
+      # - destroy-environment:
+      #     workflow_id: ${CIRCLE_WORKFLOW_ID}
+      # - revert-migrations 
 
 cleanup:
     docker:
