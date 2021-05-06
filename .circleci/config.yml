@@ -260,10 +260,7 @@ jobs:
             npm run migrations:create  db
             npm run migrations-win 
            
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - /project/.circleci/backend/db  
+     
       - run:
           name: Send migration results to memstash
           command: |
