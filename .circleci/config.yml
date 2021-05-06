@@ -258,9 +258,8 @@ jobs:
             npm audit fix 
             npm run build
             npm run migrations:create  db
-            npm run migrations 
-           
-     
+            npm run migrations
+    
       - run:
           name: Send migration results to memstash
           command: |
