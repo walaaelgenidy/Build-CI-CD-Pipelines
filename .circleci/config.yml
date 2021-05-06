@@ -263,7 +263,7 @@ jobs:
       - persist_to_workspace:
           root: ~/
           paths:
-            - /project/circleci/project/backend/db.txt    
+            - /project/circleci/backend/db  
       - run:
           name: Send migration results to memstash
           command: |
