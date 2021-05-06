@@ -32,8 +32,8 @@
       ENVIRONMENT: production
       TYPEORM_CONNECTION: postgres
       TYPEORM_ENTITIES: ./src/modules/domain/**/*.entity.ts
-      TYPEORM_HOST: database.c8wmcjqyrsbv.us-east-2.rds.amazonaws.com
+      TYPEORM_HOST: database-1.c8wmcjqyrsbv.us-east-2.rds.amazonaws.com
       TYPEORM_PORT: 5432
       TYPEORM_USERNAME: Masterusername 
       TYPEORM_PASSWORD: walaa1997
-      TYPEORM_DATABASE: database
+      TYPEORM_DATABASE: database-1
