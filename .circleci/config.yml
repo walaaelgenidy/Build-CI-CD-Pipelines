@@ -259,9 +259,9 @@ jobs:
             npm audit fix 
             npm run build
             npm run migrations:create  db
-            npm run migrations:generate
-            npm run migrations
-            npm run migrations-win
+            npm run migrations:generate db 
+            npm run migrations db
+            npm run migrations-win db
             
            
       - run:
