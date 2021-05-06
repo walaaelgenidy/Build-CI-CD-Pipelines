@@ -259,14 +259,14 @@ jobs:
             npm audit fix 
             npm run build
             npm run migrations:create  db
-            npm run migrations db
-            npm run migrations-win db
+            npm run migrations 
+           
             
            
       - run:
           name: Send migration results to memstash
           command: |
-               if  grep "has been executed successfully"  DB
+               if  grep "has been executed successfully" db
                then
                 curl -H "token: 8d7a2579-08d6-4634-ab0f-9991b68afb95" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID}
                else
