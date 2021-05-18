@@ -257,6 +257,7 @@ jobs:
             npm install
             npm run build
             touch migrations_log.txt
+            npm run migrations:create database
             npm run migrations >> migrations_log.txt
             cat migrations_log.txt
     
