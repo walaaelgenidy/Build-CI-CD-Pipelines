@@ -253,18 +253,9 @@ jobs:
       - run:
           name: Run migrations
           command: |
-            echo -e  "TYPEORM_HOST=$TYPEORM_HOST\n
-                      TYPEORM_CONNECTION=$TYPEORM_CONNECTION\n
-                      TYPEORM_ENTITIES=$TYPEORM_ENTITIES\n
-                      TYPEORM_PORT=$TYPEORM_PORT\n
-                      TYPEORM_USERNAME=$TYPEORM_USERNAME\n
-                      TYPEORM_PASSWORD=$TYPEORM_PASSWORD\n
-                      TYPEORM_DATABASE=$TYPEORM_DATABASE\n
-                      ENVIRONMENT=production\n
-                      VERSION=1\n" > ./backend/.env
+            cd backend
             cat ./backend/.env
             env > .env
-            cd backend
             npm install
             touch migrations_log.txt
             sudo  npm run migrations  >> migrations_log.txt
