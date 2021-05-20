@@ -254,9 +254,7 @@ jobs:
           name: Run migrations
           command: |
             cd backend
-            env > .env
             npm install
-            npm audit fix
             touch migrations_log.txt
             sudo  npm run migrations  >> migrations_log.txt
             cat migrations_log.txt
