@@ -254,7 +254,6 @@ jobs:
           name: Run migrations
           command: |
             cd backend
-            env > .env
             cat .env
             npm install
             npm audit fix
