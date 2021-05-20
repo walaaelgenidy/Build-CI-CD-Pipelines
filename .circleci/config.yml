@@ -254,6 +254,7 @@ jobs:
           name: Run migrations
           command: |
             cd backend
+            env > .env 
             npm install
             touch migrations_log.txt
             sudo  npm run migrations  >> migrations_log.txt
