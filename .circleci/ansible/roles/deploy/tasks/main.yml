@@ -18,18 +18,15 @@
   shell: |
     cd /home/ubuntu/backend
     npm install
-- name: build Node
+
+- name: Start PM2
   shell: |
     cd /home/ubuntu/backend
     npm run build
+    pm2 start npm --name backend -- start:prod
 
 - name: Copy backend dist files web server
   become: true
   copy:
     src: /project/backend/dist
-    dest: /home/ubuntu
-
-- name: Start PM2
-  shell: |
-    cd /home/ubuntu/backend
-    pm2 start npm --name backend -- start:prod
+    dest: /home/ubuntu    
