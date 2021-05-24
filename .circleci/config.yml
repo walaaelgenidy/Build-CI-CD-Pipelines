@@ -69,9 +69,7 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - restore_cache:
-          keys: 
-            - "backend-build"
+      
       - run:
           name: Back-end build
           command: |
@@ -86,6 +84,9 @@ jobs:
             - backend/node_modules
             - backend/dist
           key: backend-build
+      - restore_cache:
+          keys: 
+            - "backend-build"    
                  
       # - slack/notify:
       #     channel: '#project'
@@ -287,8 +288,7 @@ jobs:
       #     name: Install dependencies
       #     command: |
       #         apt-get install  curl
-      - attach_workspace:
-            at: ~/
+      
       - run:
           name: Get backend url
           command: |
