@@ -21,8 +21,7 @@
 - name: build Node
   shell: |
     cd /home/ubuntu/backend
-    npm run build:prod
-
+    npm run build
 
 - name: Copy backend dist files web server
   become: true
