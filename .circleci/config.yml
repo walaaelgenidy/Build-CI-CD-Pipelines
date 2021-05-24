@@ -48,11 +48,12 @@ jobs:
            
       - save_cache:
           paths: 
-            - /frontend/node_modules
-          key: "npm-packages"
+            - frontend/node_modules
+            - frontend/dist
+          key: frontend-build
       - restore_cache:
-          keys:
-           -  "npm-packages"   
+          keys: 
+            - "frontend-build"  
       # - slack/notify:
       #     #channel: '#project'
       #     event: fail
@@ -68,16 +69,22 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys:
-            -  "npm-packages"  
+          keys: 
+            - "backend-build"
       - run:
           name: Back-end build
           command: |
              cd backend
              npm i
-             npm run build 
+             npm run build
              cd dist
              ls
+      - save_cache:
+          paths: 
+            - backend/node_modules
+            - backend/dist
+          key: backend-build
+                 
       # - slack/notify:
       #     channel: '#project'
       #     event: fail
@@ -93,7 +100,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            -  "npm-packages" 
+            -  "frontend-build" 
       - run:
           name: front-end test
           command: |
@@ -116,7 +123,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            -  "npm-packages" 
+            -  "backend-build" 
       - run:
           name: back-end test
           command: |
@@ -139,7 +146,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            -  "npm-packages" 
+            -  "frontend-build" 
       - run:
           name: front-end scan
           command: |
@@ -161,7 +168,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            -  "npm-packages" 
+            - "backend-build"
       - run:
           name: back-end scan
           command: |
