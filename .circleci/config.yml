@@ -346,10 +346,11 @@ jobs:
        - restore_cache:
           keys: 
             - "backend-build"
-       - run: cat   .circleci/ansible/inventory.txt       
-       - run:
+       - run: cat   .circleci/ansible/inventory.txt 
+       - run:             
           name: Deploy backend
           command: |
+            ls /home/circleci/project/backend/dist
             cd .circleci/ansible
             ansible-playbook -i inventory.txt deploy-backend.yml
       # Here's where you will add some code to rollback on failure  
