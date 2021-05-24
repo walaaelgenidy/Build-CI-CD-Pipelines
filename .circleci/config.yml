@@ -237,8 +237,7 @@ jobs:
             name: Install dependencies
             command: |
               apk add --update ansible  
-              sudo apt-get install postgresql-client
-            
+              
        - run:
             name: Configure server
             command: |
