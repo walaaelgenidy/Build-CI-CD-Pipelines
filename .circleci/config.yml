@@ -58,11 +58,11 @@ jobs:
       # - slack/notify:
       #     #channel: '#project'
       #     event: fail
-      #     template: build_failed
+      #     template: basic_fail_1
       # - slack/notify:
       #     #channel: '#project'  
       #     event: pass
-      #     template: success_build      
+      #     template: basic_success_1      
 
   build-backend:
     docker:
@@ -90,11 +90,11 @@ jobs:
       # - slack/notify:
       #     channel: '#project'
       #     event: fail
-      #     template: build_failed
+      #     template: basic_fail_1
       # - slack/notify:
       #     channel: '#project'  
       #     event: pass
-      #     template: success_build          
+      #     template: basic_success_1          
   test-frontend:
      docker:
        - image: circleci/node:13.8.0
@@ -343,9 +343,7 @@ jobs:
             apk add nodejs
             apk add npm
             pip install awscli
-       - restore_cache:
-          keys: 
-            - "backend-build"
+       
        - run: cat   .circleci/ansible/inventory.txt 
        - run:             
           name: Deploy backend
@@ -399,7 +397,7 @@ jobs:
       - run:
           name: Frontend smoke test.
           command: |
-                URL="http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website.us-east-2.amazonaws.com"
+                URL="http://udapeople-${CIRCLE_WORKFLOW_ID}"
                 if curl -s ${URL} | grep "Welcome" 
                 then
                 return 0
@@ -472,8 +470,7 @@ workflows:
       - scan-frontend:
           requires: [build-frontend]
       - deploy-infrastructure:
-          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-          
+          requires: [test-frontend, test-backend, scan-frontend, scan-backend]       
       - configure-infrastructure:
           requires: [deploy-infrastructure]
       - run-migrations:

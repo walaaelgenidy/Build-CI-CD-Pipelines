@@ -18,6 +18,10 @@
   shell: |
     cd /home/ubuntu/backend
     npm install
+- name: build Node
+  shell: |
+    cd /home/ubuntu/backend
+    npm run build:prod
 
 
 - name: Copy backend dist files web server
