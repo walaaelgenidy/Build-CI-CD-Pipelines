@@ -14,13 +14,6 @@
     production: yes
     state: present
 
-
-- name: Copy backend dist files web server
-  become: true
-  copy:
-    src: /project/backend/dist
-    dest: /home/ubuntu
-
 - name: Install Node
   shell: |
     cd /home/ubuntu/backend
@@ -29,6 +22,12 @@
   shell: |
     cd /home/ubuntu/backend
     npm run build
+- name: Copy backend dist files web server
+  become: true
+  copy:
+    src: /project/backend/dist
+    dest: /home/ubuntu
+
 - name: Start PM2
   shell: |
     cd /home/ubuntu/backend
