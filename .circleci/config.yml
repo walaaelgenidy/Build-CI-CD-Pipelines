@@ -278,18 +278,32 @@ jobs:
       #     name: Install dependencies
       #     command: |
       #         apt-get install  curl
+      - attach_workspace:
+            at: ~/
       - run:
           name: Get backend url
           command: |
-            BACKEND_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)   
+            aws ec2 describe-instances \
+            \
+                  --query 'Reservations[*].Instances[*].PublicIpAddress' \
+                  --filters "Name=tag:project,Values=udapeople" \
+                  --output text > IP.txt \ 
+                  
+      - run:
+          name: export backend url
+          command: | 
+            BACKEND_IP=$(cat IP.txt)
+            echo "$BACKEND_IP"           
             export API_URL="http://${BACKEND_IP}:3030"
-            echo "${API_URL}" >> "frontend/.env"
+            echo "${API_URL}"   
+            echo API_URL="http://${BACKEND_IP}:3030" >> "frontend/.env"
+            
       - run:
           name: Deploy frontend objects
           command: |
             cd frontend
             npm run build
-      - run: aws s3 cp ./frontend/dist s3://udapeople-${CIRCLE_WORKFLOW_ID}/ --recursive
+      - run: aws s3 sync dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}
  
       # Here's where you will add some code to rollback on failure      
       # - destroy-environment:
