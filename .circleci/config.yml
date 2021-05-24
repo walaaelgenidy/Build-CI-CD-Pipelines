@@ -77,8 +77,7 @@ jobs:
              npm i
              npm i oauth-sign --save
              npm run build
-             cd dist
-             ls
+            
       - save_cache:
           paths: 
             - backend/node_modules
@@ -315,7 +314,7 @@ jobs:
             npm install
             npm install -g webpack webpack-cli
             npm run build
-      - run: aws s3 list-buckets      
+      - run: aws s3 ls      
       - run: aws s3 sync frontend/dist s3://udapeople-${CIRCLE_WORKFLOW_ID}
  
       # Here's where you will add some code to rollback on failure      

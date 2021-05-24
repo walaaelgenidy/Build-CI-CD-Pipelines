@@ -18,14 +18,12 @@
   shell: |
     cd /home/ubuntu/backend
     npm install
-- name: Build Node
-  shell: |
-    cd /home/ubuntu/backend
-    npm run build
+
+
 - name: Copy backend dist files web server
   become: true
   copy:
-    src: /project/backend/dist
+    src: /root/project/backend/dist
     dest: /home/ubuntu
 
 - name: Start PM2
