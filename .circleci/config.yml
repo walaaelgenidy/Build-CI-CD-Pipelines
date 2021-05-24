@@ -265,8 +265,6 @@ jobs:
                if  grep "has been executed successfully" backend/migrations_log.txt
                then
                 curl -H "token: 8d7a2579-08d6-4634-ab0f-9991b68afb95" --request  GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID}
-               else
-                return 0
                fi
            
      # Here's where you will add some code to rollback on failure      
