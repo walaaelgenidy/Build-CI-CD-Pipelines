@@ -296,7 +296,7 @@ jobs:
             \
                   --query 'Reservations[*].Instances[*].PublicIpAddress' \
                   --filters "Name=tag:project,Values=udapeople" \
-                  --output text > IP.txt \ 
+                  --output text > IP.txt 
                   
       - run:
           name: export backend url
