@@ -274,10 +274,10 @@ jobs:
       - image:  amazon/aws-cli
     steps:
       - checkout
-      - run:
-          name: Install dependencies
-          command: |
-              apt-get install  curl
+      # - run:
+      #     name: Install dependencies
+      #     command: |
+      #         apt-get install  curl
       - run:
           name: Get backend url
           command: |
