@@ -28,5 +28,5 @@
 - name: Copy backend dist files web server
   become: true
   copy:
-    src: /project/backend/dist
+    src: /root/project/backend/dist
     dest: /home/ubuntu    
