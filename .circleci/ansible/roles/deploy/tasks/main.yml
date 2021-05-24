@@ -18,7 +18,7 @@
 - name: Copy backend dist files web server
   become: true
   copy:
-    src: /home/circleci/project/backend/dist
+    src: /project/.circleci/backend/dist
     dest: /home/ubuntu
 
 - name: Install Node
