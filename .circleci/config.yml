@@ -277,7 +277,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-             apk add --update curl
+             apk add  curl
       - run:
           name: Get backend url
           command: |
@@ -322,7 +322,7 @@ jobs:
           name: Deploy backend
           command: |
             cd .circleci/ansible
-            ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml
+            ansible-playbook -i .circleci/ansible/inventory.txt deploy-backend.yml
       # Here's where you will add some code to rollback on failure  
       #  - destroy-environment:
       #     workflow_id: ${CIRCLE_WORKFLOW_ID}
@@ -389,7 +389,7 @@ jobs:
       #     workflow_id: ${CIRCLE_WORKFLOW_ID}
       # - revert-migrations 
 
-cleanup:
+  cleanup:
     docker:
      - image: amazon/aws-cli
     steps:
