@@ -315,7 +315,7 @@ jobs:
             npm install
             npm install -g webpack webpack-cli
             npm run build
-      - run: aws s3 sync frontend/dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}
+      - run: aws s3 sync frontend/dist s3://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website.us-east-2.amazonaws.com
  
       # Here's where you will add some code to rollback on failure      
       # - destroy-environment:
@@ -332,6 +332,7 @@ jobs:
           fingerprints:  ["f5:f5:9e:fb:f7:5a:47:8a:ea:d9:b3:df:ef:dc:c8:4d"]
        - attach_workspace:
             at: ~/
+
        - run:
           name: Install dependencies
           command: |
@@ -342,8 +343,9 @@ jobs:
             apk add nodejs
             apk add npm
             pip install awscli
-       - attach_workspace:
-          at: ~/ 
+       - restore_cache:
+          keys: 
+            - "backend-build"
        - run: cat   .circleci/ansible/inventory.txt       
        - run:
           name: Deploy backend
@@ -396,7 +398,7 @@ jobs:
       - run:
           name: Frontend smoke test.
           command: |
-                URL="http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website-us-east-2.amazonaws.com"
+                URL="http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website.us-east-2.amazonaws.com"
                 if curl -s ${URL} | grep "Welcome" 
                 then
                 return 0
