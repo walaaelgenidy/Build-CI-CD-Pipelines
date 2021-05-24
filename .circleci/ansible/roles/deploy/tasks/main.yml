@@ -16,6 +16,7 @@
 
 
 - name: Copy backend dist files web server
+  become: true
   copy:
     src: /home/circleci/project/backend/dist
     dest: /home/ubuntu
