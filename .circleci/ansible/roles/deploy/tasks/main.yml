@@ -25,6 +25,3 @@
     pm2 start  npm -- run start
   register: execute_node
 
-- name: "Configure pm2 to start as service"
-  shell: |
-    env PATH=$PATH:/usr/local/bin pm2 startup -u ubuntu
