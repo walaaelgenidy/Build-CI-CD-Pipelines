@@ -6,18 +6,19 @@
 
 - name: "Copy compiled backend app"
   copy:
-    src: dist.zip
-    dest: "~/backend_app/dist.zip"
+    src: dist
+    dest: "~/backend_app/dist"
 
-- name: "Unzip backend files to correct directory"
-  shell: |
-    cd ~/backend_app
-    unzip dist.zip
-    rm -rf dist.zip
+# - name: "Unzip backend files to correct directory"
+#   shell: |
+#     cd ~/backend_app
+#     unzip dist.zip
+#     rm -rf dist.zip
 - name: "Install dependencies for project"
   shell: |
     cd ~/backend_app
     npm install
+    
 - name: "Executing node"
   shell: |
     export
