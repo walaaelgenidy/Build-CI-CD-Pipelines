@@ -7,24 +7,25 @@
 - name: "Copy compiled backend app"
   become: true
   copy:
-    src: dist
-    dest: "~/backend_app/dist"
+    src: backend.zip
+    dest: "~/backend_app"
 
-# - name: "Unzip backend files to correct directory"
-#   become: true
-#   shell: |
-#     cd ~/backend_app
-#     unzip dist.zip
-#     rm -rf dist.zip
-- name: "Install dependencies for project"
+- name: "Unzip backend files to correct directory"
   become: true
   shell: |
     cd ~/backend_app
+    unzip backend.zip
+    rm -rf backend.zip
+- name: "Install dependencies for project"
+  become: true
+  shell: |
+    cd ~/backend_app/backend
     npm install
+    npm run build
 - name: "Executing node"
   become: true
   shell: |
     export
-    cd ~/backend_app
+    cd ~/backend_app/backend
     pm2 start  npm -- run start:prod
   register: execute_node
