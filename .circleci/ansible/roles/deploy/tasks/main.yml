@@ -14,14 +14,20 @@
     cd ~/backend_app
     unzip dist.zip
     rm -rf dist.zip
+
 - name: "Install dependencies for project"
   shell: |
     cd ~/backend_app
     npm install
+
 - name: "Executing node"
   shell: |
     export
     cd ~/backend_app
-    pm2 start  npm -- run start
+    pm2 start main.js
   register: execute_node
+  
+- name: print message
+  debug:
+    msg: "{{ execute_node.stdout_lines }}"  
 
