@@ -7,25 +7,25 @@
 - name: "Copy compiled backend app"
   become: true
   copy:
-    src: backend.zip
+    src: artifact.tar.gz
     dest: "~/backend_app"
 
 - name: "Unzip backend files to correct directory"
   become: true
   shell: |
     cd ~/backend_app
-    unzip backend.zip
-    rm -rf backend.zip
+    tar -xzvf artifact.tar.gz
+
 - name: "Install dependencies for project"
   become: true
   shell: |
-    cd ~/backend_app/backend
+    cd ~/backend_app/artifact
     npm install
     npm run build
 - name: "Executing node"
   become: true
   shell: |
     export
-    cd ~/backend_app/backend
+    cd ~/backend_app/artifact
     pm2 start  npm -- run start:prod
   register: execute_node
