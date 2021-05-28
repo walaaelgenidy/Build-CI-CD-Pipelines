@@ -27,9 +27,9 @@ commands:
             SUCCESS=$(curl -H "token: 8d7a2579-08d6-4634-ab0f-9991b68afb95" --request  GET  https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID})
             if(( $SUCCESS )); 
             then
-             cd ~/project/backend
+             cd backend
              npm i
-             npm run migration:revert
+             npm run migrations:revert
             fi
             
 jobs:
