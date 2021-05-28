@@ -377,7 +377,7 @@ jobs:
           name: Install dependencies
           command: |
               apk add --update curl
-              apk add tar gzip 
+              apk add --update tar gzip  nodejs npm
               pip install awscli
        
       - run:
@@ -406,7 +406,7 @@ jobs:
       - run:
           name: Frontend smoke test.
           command: |
-                export URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website.us-east-2.amazonaws.com/#/employees"
+                export URL="http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website.us-east-2.amazonaws.com/#/employees"
                 echo "${URL}"
                 if curl -s  ${URL} | grep "Welcome" 
                 then
