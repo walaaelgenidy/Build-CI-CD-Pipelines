@@ -1,35 +1,36 @@
 version: 2.1
 # orbs:
 #   slack: circleci/slack@4.4.0
+  
+commands:
+  destroy-environment:
+    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
+    steps:
+      - run:
+          name: Destroy environments
+          when: on_fail
+          command: |
+            aws cloudformation delete-stack --stack-name udapeople-back-end-"${CIRCLE_WORKFLOW_ID}"
+            aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID} --recursive
+            aws cloudformation delete-stack --stack-name udapeople-front-end-"${CIRCLE_WORKFLOW_ID}"
 
-# commands:
-#   destroy-environment:
-#     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
-#     steps:
-#       - run:
-#           name: Destroy environments
-#           when: on_fail
-#           command: |
-#             aws cloudformation delete-stack --stack-name udapeople-back-end-"${CIRCLE_WORKFLOW_ID}"
-#             aws cloudformation delete-stack --stack-name udapeople-front-end-"${CIRCLE_WORKFLOW_ID}"
-
-  # revert-migrations:
-  #   description: Revert the last migration if successfully run in the current workflow.
-       
-  #   steps:
-  #     - run:
-  #         name: Revert migrations
-  #         # Add when this will run
-  #         command: |
-  #           # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-  #           SUCCESS = 1
-  #           if(( $SUCCESS==1 )); 
-  #           then
-  #             cd ~/project/backend
-  #             npm install
-  #             cd backend
-  #             npm run migrations:revert
-  #           fi
+  revert-migrations:
+    description: Revert the last migration if successfully run in the current workflow.
+    steps:
+      - run:
+          name: Revert migrations
+          # Add when this will run
+          command: |
+            # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
+            SUCCESS = 1
+            if(( $SUCCESS==1 )); 
+            then
+             cd ~/project/backend
+            if [[ -f "~/project/backend/migrations_log.txt" ]]; then
+              npm i
+              npm run migration:revert
+            
+            fi
             
 jobs:
   build-frontend:
@@ -230,8 +231,9 @@ jobs:
           paths:
             - project/.circleci/ansible/inventory.txt
             
-    #  - destroy_environment: #only executes if the job fails
- 
+      - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID}
+     
   configure-infrastructure:
     docker:
       - image: python:3.7-alpine3.11
@@ -277,7 +279,7 @@ jobs:
                fi
      
      # Here's where you will add some code to rollback on failure      
-     # - revert-migrations
+      - revert-migrations
   deploy-frontend:
     docker:
       - image:  amazon/aws-cli
@@ -318,9 +320,9 @@ jobs:
       - run: aws s3 sync frontend/dist s3://udapeople-${CIRCLE_WORKFLOW_ID}
  
       # Here's where you will add some code to rollback on failure      
-      # - destroy-environment:
-      #     workflow_id: ${CIRCLE_WORKFLOW_ID}
-      # - revert-migrations
+      - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID}
+      - revert-migrations
 
   deploy-backend:
     docker:
@@ -360,9 +362,9 @@ jobs:
             cd .circleci/ansible
             ansible-playbook -i inventory.txt deploy-backend.yml
       # Here's where you will add some code to rollback on failure  
-      #  - destroy-environment:
-      #     workflow_id: ${CIRCLE_WORKFLOW_ID}
-      #  - revert-migrations
+       - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID}
+       - revert-migrations
 
   smoke-test:
     docker:
@@ -375,17 +377,7 @@ jobs:
               apk add --update curl
               apk add tar gzip 
               pip install awscli
-      - run:
-          name: Frontend smoke test.
-          command: |
-                export URL="http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website-us-east-2.amazonaws.com"
-                echo "${URL}"
-                if curl -s --head ${URL} | grep "Welcome" 
-                then
-                return 0
-                else
-                return 1
-                fi        
+       
       - run:
           name: Get backend url
           command: |
@@ -409,12 +401,22 @@ jobs:
               return 1
             fi   
      
-      
+      - run:
+          name: Frontend smoke test.
+          command: |
+                export URL="http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website.us-east-2.amazonaws.com/#/employees"
+                echo "${URL}"
+                if curl -s  ${URL} | grep "Welcome" 
+                then
+                return 0
+                else
+                return 1
+                fi      
      
       # Here's where you will add some code to rollback on failure  
-      # - destroy-environment:
-      #     workflow_id: ${CIRCLE_WORKFLOW_ID}
-      # - revert-migrations
+      - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID}
+      - revert-migrations
   cloudfront-update:
     docker:
       - image:  amazon/aws-cli
@@ -432,9 +434,9 @@ jobs:
             --stack-name cloudfront \
             --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID}"
       # Here's where you will add some code to rollback on failure 
-      # - destroy-environment:
-      #     workflow_id: ${CIRCLE_WORKFLOW_ID}
-      # - revert-migrations 
+      - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID}
+      - revert-migrations 
 
   cleanup:
     docker:
