@@ -28,10 +28,8 @@ commands:
             if(( $SUCCESS==1 )); 
             then
              cd ~/project/backend
-            if [[ -f "~/project/backend/migrations_log.txt" ]]; then
-              npm i
-              npm run migration:revert
-            
+             npm i
+             npm run migration:revert
             fi
             
 jobs:
@@ -271,16 +269,18 @@ jobs:
             touch migrations_log.txt
             sudo  npm run migrations  >> migrations_log.txt
             cat migrations_log.txt
-    
+      - run:
+          name: Get backend url
+          command: |
+             URLS=$(aws ec2 describe-instances  --query 'Reservations[*].Instances[*].PublicIpAddress'  --filters "Name=tag:project,Values=udapeople"  --output text)
+                  
       - run:
           name: Send migration results to memstash
           command: |
                if  grep "has been executed successfully" backend/migrations_log.txt
                then
-                curl -H "token: 8d7a2579-08d6-4634-ab0f-9991b68afb95" --request  POST  https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID}
+               curl -H "Content-Type: text/plain" -H "token: 8d7a2579-08d6-4634-ab0f-9991b68afb95" --request PUT --data "$URLS" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID}      
                fi
-     
-     # Here's where you will add some code to rollback on failure      
       - revert-migrations
   deploy-frontend:
     docker:
