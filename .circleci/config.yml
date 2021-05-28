@@ -272,6 +272,7 @@ jobs:
       - run:
           name: Get backend url
           command: |
+             npm i aws-cli
              URLS=$(aws ec2 describe-instances  --query 'Reservations[*].Instances[*].PublicIpAddress'  --filters "Name=tag:project,Values=udapeople"  --output text)
                   
       - run:
