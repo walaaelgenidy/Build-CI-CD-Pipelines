@@ -15,6 +15,13 @@
   shell: |
       cd /home/ubuntu
       tar -xzvf backend.tar.gz
+- name: "install pm2"
+  become: true
+  npm:
+    name: pm2
+    global: yes
+    production: yes
+    state: present   
 
 - name: "Install dependencies for project"
   become: true
@@ -23,6 +30,7 @@
     npm install pm2 -g
     npm install
     npm run build
+    pm2 ls
     pm2 start --name api  npm -- run start
 
 # - name: "Executing node"
