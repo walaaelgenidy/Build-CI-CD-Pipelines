@@ -398,21 +398,13 @@ jobs:
               return 1
             fi   
      
-      # - run:
-      #     name: Backend smoke test.
-      #     command: |
-            
-      #         if curl -s --head ${API_URL} 
-      #         then
-      #          return 0
-      #         else
-      #          return 1
-      #         fi
+      
       - run:
           name: Frontend smoke test.
           command: |
-                URL="http://udapeople-${CIRCLE_WORKFLOW_ID}"
-                if curl -s ${URL} | grep "Welcome" 
+                export URL="http://udapeople-${CIRCLE_WORKFLOW_ID}"
+                echo "${URL}"
+                if curl -s --head ${URL} | grep "Welcome" 
                 then
                 return 0
                 else
