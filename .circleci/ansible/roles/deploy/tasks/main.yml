@@ -11,7 +11,7 @@
     dest: "~/backend_app"
 
 - name: "Unzip backend files to correct directory"
-  become: true
+ 
   shell: |
     cd ~/backend_app
     tar -xzvf backend.tar.gz 
