@@ -436,11 +436,25 @@ jobs:
             yum -y install tar gzip
             curl -sL https://rpm.nodesource.com/setup_lts.x | bash -
             yum -y install nodejs
-      - run: |
+      - run:
+          name: Get old stack workflow id
+          command: |
+            export OldWorkflowID=$(aws cloudformation \
+            list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
+            --no-paginate --output text)
+
+            export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
+            --stack-status-filter CREATE_COMPLETE --no-paginate --output text))     
+          
+      - run: echo OldWorkflowID "${OldWorkflowID}"  
+      - run: 
+          name: Update CloudFront distribution
+          command: |
             aws cloudformation deploy \
             --template-file .circleci/files/cloudfront.yml \
             --stack-name cloudfront \
             --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID}"
+
       # Here's where you will add some code to rollback on failure 
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID}
@@ -468,7 +482,7 @@ jobs:
       - run:
           name: Remove old stacks and files
           command: |
-            echo OldWorkflowI "${OldWorkflowI}"
+            echo OldWorkflowID "${OldWorkflowID}"
             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
             then
               aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive 
