@@ -446,6 +446,7 @@ jobs:
                   --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
 
             echo $OldWorkflowID
+            echo Current Workflow Id: "${CIRCLE_WORKFLOW_ID}"
             echo $STACKS
 
             aws cloudformation deploy \
@@ -453,15 +454,15 @@ jobs:
             --stack-name cloudfront  \
             --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID}"
 
-            if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
+            if [ "${OldWorkflowID}" != "${CIRCLE_WORKFLOW_ID:0:7}" ]
             then
             aws s3 rb s3://udapeople-${OldWorkflowID} --force
             aws cloudformation delete-stack --stack-name udapeople-back-end-"${OldWorkflowID}"
             aws cloudformation delete-stack --stack-name udapeople-front-end-"${OldWorkflowID}
             echo "stack deleted succesfully"
             else
-            echo "This is new stack.So there is nothing much to do."
-            fi"
+            echo "don't destroy"
+            fi
 
       # Here's where you will add some code to rollback on failure 
       - destroy-environment:
