@@ -166,7 +166,7 @@ jobs:
           name: back-end scan
           command: |
              cd backend
-             npm audit fix 
+             npm audit fix --audit-level=critical --force
       - slack/notify:
           channel: C01V8BSGL4V
           event: fail
