@@ -1,1 +1,5 @@
 https://github.com/walaaelgenidy/Udacity_Project_3
+http://udapeople-30500cc6-4423-4a9d-bcfb-6f8f8855d531.s3-website.us-east-2.amazonaws.com
+d1vhc4r2frm3b9.cloudfront.net
+ec2-18-218-201-100.us-east-2.compute.amazonaws.com
+ec2-3-17-190-207.us-east-2.compute.amazonaws.com

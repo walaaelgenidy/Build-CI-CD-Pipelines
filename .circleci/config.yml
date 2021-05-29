@@ -64,7 +64,11 @@ jobs:
       - slack/notify:
           channel: C01V8BSGL4V
           event: pass
-          template: basic_success_1         
+          template: basic_success_1 
+      - slack/notify:
+          channel: C01V8BSGL4V
+          event: fail
+          template: basic_fail_1            
 
   build-backend:
     docker:
