@@ -454,11 +454,11 @@ jobs:
             --stack-name cloudfront  \
             --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID}"
 
-            if [ "${OldWorkflowID}" != "${CIRCLE_WORKFLOW_ID:0:7}" ]
+            if [ "${OldWorkflowID}" != "${CIRCLE_WORKFLOW_ID}" ]
             then
             aws s3 rb s3://udapeople-${OldWorkflowID} --force
             aws cloudformation delete-stack --stack-name udapeople-back-end-"${OldWorkflowID}"
-            aws cloudformation delete-stack --stack-name udapeople-front-end-"${OldWorkflowID}
+            aws cloudformation delete-stack --stack-name udapeople-front-end-"${OldWorkflowID}"
             echo "stack deleted succesfully"
             else
             echo "don't destroy"
