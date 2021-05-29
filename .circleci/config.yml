@@ -472,8 +472,7 @@ jobs:
           channel: C01V8BSGL4V
           event: fail
           template: basic_fail_1
-
-   
+ 
 
 workflows:
   default:
