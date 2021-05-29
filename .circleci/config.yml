@@ -1,6 +1,6 @@
 version: 2.1
-# orbs:
-#   slack: circleci/slack@4.4.0
+orbs:
+  slack: circleci/slack@4.4.2
   
 commands:
   destroy-environment:
@@ -16,7 +16,8 @@ commands:
             aws cloudformation delete-stack --stack-name udapeople-back-end-"${CIRCLE_WORKFLOW_ID}"
             aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID} --recursive
             aws cloudformation delete-stack --stack-name udapeople-front-end-"${CIRCLE_WORKFLOW_ID}"
-
+  
+            
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
     steps:
@@ -56,14 +57,14 @@ jobs:
       - restore_cache:
           keys: 
             - "frontend-build"  
-      # - slack/notify:
-      #     #channel: '#project'
-      #     event: fail
-      #     template: basic_fail_1
-      # - slack/notify:
-      #     #channel: '#project'  
-      #     event: pass
-      #     template: basic_success_1      
+      - slack/notify:
+          channel: C01V8BSGL4V
+          event: fail
+          template: basic_fail_1 
+      - slack/notify:
+          channel: C01V8BSGL4V
+          event: pass
+          template: basic_success_1         
 
   build-backend:
     docker:
@@ -88,14 +89,11 @@ jobs:
           keys: 
             - "backend-build"    
                  
-      # - slack/notify:
-      #     channel: '#project'
-      #     event: fail
-      #     template: basic_fail_1
-      # - slack/notify:
-      #     channel: '#project'  
-      #     event: pass
-      #     template: basic_success_1          
+      - slack/notify:
+          channel: C01V8BSGL4V
+          event: fail
+          template: basic_fail_1  
+
   test-frontend:
      docker:
        - image: circleci/node:13.8.0
@@ -110,14 +108,10 @@ jobs:
              cd frontend
              npm i
              npm run test
-      # - slack/notify:
-      #     channel: '#project'
-      #     event: fail
-      #     template: test_failed
-      # - slack/notify:
-      #     channel: '#project'  
-      #     event: pass
-      #     template: success_test       
+      - slack/notify:
+          channel: C01V8BSGL4V
+          event: fail
+          template: basic_fail_1      
                 
   test-backend:
      docker:
@@ -133,14 +127,10 @@ jobs:
              cd backend
              npm i
              npm run test
-      # - slack/notify:
-      #     channel: '#project'
-      #     event: fail
-      #     template: test_failed
-      # - slack/notify:
-      #     channel: '#project'  
-      #     event: pass
-      #     template: success_test       
+      - slack/notify:
+          channel: C01V8BSGL4V
+          event: fail
+          template: basic_fail_1      
             
   scan-frontend:
       docker:
@@ -155,14 +145,10 @@ jobs:
           command: |
              cd frontend
              npm audit fix --audit-level=critical 
-      # - slack/notify:
-      #     channel: '#project'
-      #     event: fail
-      #     template: scan_failed
-      # - slack/notify:
-      #     channel: '#project'  
-      #     event: pass
-      #     template: success_scan
+      - slack/notify:
+          channel: C01V8BSGL4V
+          event: fail
+          template: basic_fail_1
 
   scan-backend:
       docker:
@@ -177,15 +163,10 @@ jobs:
           command: |
              cd backend
              npm audit fix 
-      #        --audit-level=critical --force
-      # - slack/notify:
-      #     channel: '#project'
-      #     event: fail
-      #     template: scan_backend_failed
-      # - slack/notify:
-      #     channel: '#project'  
-      #     event: pass
-      #     template: success_scan_backend       
+      - slack/notify:
+          channel: C01V8BSGL4V
+          event: fail
+          template: basic_fail_1     
    
   deploy-infrastructure:
     docker:
@@ -230,6 +211,10 @@ jobs:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
+      - slack/notify:
+          channel: C01V8BSGL4V
+          event: fail
+          template: basic_fail_1      
             
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID}
@@ -257,6 +242,10 @@ jobs:
       # Here's where you will add some code to rollback on failure      
        - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID}
+       - slack/notify:
+          channel: C01V8BSGL4V
+          event: fail
+          template: basic_fail_1   
 
   run-migrations:
     docker:
@@ -282,6 +271,10 @@ jobs:
                curl -H "Content-Type: text/plain" -H "token: 8d7a2579-08d6-4634-ab0f-9991b68afb95" --request PUT --data "$BACKEND_IP" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID}      
                fi
       - revert-migrations
+      - slack/notify:
+          channel: C01V8BSGL4V
+          event: fail
+          template: basic_fail_1
   deploy-frontend:
     docker:
       - image:  amazon/aws-cli
@@ -325,6 +318,10 @@ jobs:
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID}
       - revert-migrations
+      - slack/notify:
+          channel: C01V8BSGL4V
+          event: fail
+          template: basic_fail_1
 
   deploy-backend:
     docker:
@@ -367,6 +364,10 @@ jobs:
        - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID}
        - revert-migrations
+       - slack/notify:
+          channel: C01V8BSGL4V
+          event: fail
+          template: basic_fail_1
 
   smoke-test:
     docker:
@@ -419,6 +420,10 @@ jobs:
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID}
       - revert-migrations
+      - slack/notify:
+          channel: C01V8BSGL4V
+          event: fail
+          template: basic_fail_1
 
   cloudfront-update:
     docker:
@@ -440,6 +445,10 @@ jobs:
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID}
       - revert-migrations 
+      - slack/notify:
+          channel: C01V8BSGL4V
+          event: fail
+          template: basic_fail_1
 
   cleanup:
     docker:
@@ -459,41 +468,58 @@ jobs:
       - run:
           name: Remove old stacks and files
           command: |
+            echo OldWorkflowI "${OldWorkflowI}"
             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
             then
               aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive 
               aws cloudformation delete-stack --stack-name "udapeople-front-end-${OldWorkflowID}"
               aws cloudformation delete-stack --stack-name  "udapeople-back-end-${OldWorkflowID}"
             fi
-            
+      - slack/notify:
+          channel: C01V8BSGL4V
+          event: fail
+          template: basic_fail_1     
 
 workflows:
   default:
     jobs:
-      - build-frontend
-        #  context: slack
-      - build-backend
+      - build-frontend:
+         context: slack
+      - build-backend:
+         context: slack
       - test-frontend:
+          context: slack
           requires: [build-frontend]
       - test-backend:
+          context: slack
           requires: [build-backend]
       - scan-backend:
+          context: slack
           requires: [build-backend]
       - scan-frontend:
+          context: slack
           requires: [build-frontend]
       - deploy-infrastructure:
+          context: slack
           requires: [test-frontend, test-backend, scan-frontend, scan-backend]       
       - configure-infrastructure:
+          context: slack
           requires: [deploy-infrastructure]
       - run-migrations:
+          context: slack
           requires: [configure-infrastructure]
       - deploy-frontend:
+          context: slack
           requires: [run-migrations]
       - deploy-backend:
+          context: slack
           requires: [run-migrations]
       - smoke-test:
+          context: slack
           requires: [deploy-backend, deploy-frontend]
       - cloudfront-update:
+          context: slack
           requires: [smoke-test]
       - cleanup:
+          context: slack
           requires: [cloudfront-update]
