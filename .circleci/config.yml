@@ -359,8 +359,6 @@ jobs:
             npm i 
             npm run build
             ls dist
-            cd dist
-            cp ../package.json .
             tar -czvf dist.tar.gz dist
             mkdir -p ~/project/.circleci/ansible/roles/deploy/files/
             mv dist.tar.gz  ~/project/.circleci/ansible/roles/deploy/files/
