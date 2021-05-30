@@ -362,6 +362,7 @@ jobs:
             tar -czvf dist.tar.gz dist
             mkdir -p ~/project/.circleci/ansible/roles/deploy/files/
             mv dist.tar.gz  ~/project/.circleci/ansible/roles/deploy/files/
+            cp -b ~/project/backend/package.json  ~/project/.circleci/ansible/roles/deploy/files/
        - run:             
           name: Deploy backend
           command: |
@@ -519,7 +520,7 @@ workflows:
       - smoke-test:
           context: slack
           requires: [deploy-backend, deploy-frontend]
-      # - cloudfront-update:
-      #     context: slack
-      #     requires: [smoke-test]
+      - cloudfront-update:
+          context: slack
+          requires: [smoke-test]
      

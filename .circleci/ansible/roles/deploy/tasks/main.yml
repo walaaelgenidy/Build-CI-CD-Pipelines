@@ -16,6 +16,11 @@
       cd /home/ubuntu
       tar -xzvf dist.tar.gz
       rm -rf dist.tar.gz
+- name: "Copy compiled backend app"
+  become: true
+  copy:
+    src: package.json
+    dest: /home/ubuntu/dist
 
 - name: "Install dependencies for project"
   shell: |
