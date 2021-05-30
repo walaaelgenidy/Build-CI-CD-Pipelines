@@ -30,7 +30,7 @@
     npm install
     npm run build
     pm2 ls
-    pm2 start --name api  npm -- run start
+    pm2 start --name api  npm -- run start:prod
 
 # - name: "Executing node"
 #   shell: |
