@@ -7,14 +7,22 @@
 - name: "Copy compiled backend app"
   become: true
   copy:
-    src: backend.tar.gz
+    src: dist.tar.gz
     dest: /home/ubuntu
 
 - name: "Unzip backend files to correct directory"
 
   shell: |
       cd /home/ubuntu
-      tar -xzvf backend.tar.gz
+      tar -xzvf dist.tar.gz
+      rm -rf dist.tar.gz
+
+- name: "Install dependencies for project"
+  shell: |
+    cd /home/ubuntu/dist
+    npm install
+
+
 - name: "install pm2"
   become: true
   npm:
@@ -23,17 +31,13 @@
     production: yes
     state: present   
 
-- name: "Install dependencies for project"
+- name: "Executing node"
   shell: |
-    cd /home/ubuntu/backend
-    npm install pm2 -g
-    npm install
-    npm run build
-    pm2 ls
-    pm2 start --name api  npm -- run start:prod
+    export
+    cd /home/ubuntu/dist
+    pm2 start main.js
+  register: execute_node
 
-# - name: "Executing node"
-#   shell: |
-#     cd /home/ubuntu/backend
-
-#   register: execute_node
+- name: print message
+  debug:
+    msg: "{{ execute_node.stdout_lines }}"

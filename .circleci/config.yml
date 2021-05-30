@@ -355,10 +355,15 @@ jobs:
        - run:             
           name: Deploy 
           command: |
-            cd ~/project
-            tar -czvf backend.tar.gz backend
+            cd backend
+            npm i 
+            npm run build
+            ls dist
+            cd dist
+            cp ../package.json .
+            tar -czvf dist.tar.gz dist
             mkdir -p ~/project/.circleci/ansible/roles/deploy/files/
-            mv backend.tar.gz  ~/project/.circleci/ansible/roles/deploy/files/
+            mv dist.tar.gz  ~/project/.circleci/ansible/roles/deploy/files/
        - run:             
           name: Deploy backend
           command: |
