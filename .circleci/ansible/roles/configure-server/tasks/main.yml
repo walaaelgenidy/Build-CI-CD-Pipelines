@@ -31,7 +31,7 @@
   environment:
       ENVIRONMENT: production
       TYPEORM_CONNECTION: postgres
-      TYPEORM_ENTITIES: ./src/modules/domain/**/*.entity.ts
+      TYPEORM_ENTITIES: ./home/ubuntu/dist/modules/domain/**/*.entity.ts
       TYPEORM_HOST: database-1.c8wmcjqyrsbv.us-east-2.rds.amazonaws.com
       TYPEORM_PORT: 5432
       TYPEORM_USERNAME: postgres 
