@@ -27,7 +27,7 @@
 - name: Executing node
   become: true
   shell: |
-    pm2 start  npm -- run start:prod
+    pm2 start  npm -- run start
   environment:
       ENVIRONMENT: production
       TYPEORM_CONNECTION: postgres
