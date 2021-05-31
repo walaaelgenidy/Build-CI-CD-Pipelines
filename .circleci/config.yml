@@ -343,6 +343,7 @@ jobs:
           name: Install dependencies
           command: |
             apk add --update ansible
+            ansible-galaxy install weareinteractive.environment
             apk add tar gzip
             apk add zip unzip 
             apk add curl
