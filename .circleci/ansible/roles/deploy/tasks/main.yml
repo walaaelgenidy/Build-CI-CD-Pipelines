@@ -42,6 +42,7 @@
     cd /home/ubuntu/dist
     pm2 start main.js
     pm2 save
+    pm2 logs
   register: execute_node
 
 - name: print message
