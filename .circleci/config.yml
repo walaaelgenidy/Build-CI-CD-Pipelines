@@ -357,6 +357,7 @@ jobs:
           name: Deploy 
           command: |
             cd backend
+            cat .env
             npm i 
             npm run build
             ls dist
@@ -364,6 +365,7 @@ jobs:
             mkdir -p ~/project/.circleci/ansible/roles/deploy/files/
             mv dist.tar.gz  ~/project/.circleci/ansible/roles/deploy/files/
             cp -f ~/project/backend/package.json  ~/project/.circleci/ansible/roles/deploy/files/
+            
        - run:             
           name: Deploy backend
           command: |
