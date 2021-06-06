@@ -38,6 +38,7 @@
 
 - name: "Executing node"
   shell: |
+    cd /home/ubuntu/dist
     export ENVIRONMENT=production
     export NODE_ENV=production
     export TYPEORM_HOST="{{ lookup('env', 'TYPEORM_HOST') }}"
