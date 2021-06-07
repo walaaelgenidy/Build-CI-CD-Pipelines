@@ -27,14 +27,22 @@
 - name: Executing node
   become: true
   shell: |
-    pm2 start  npm -- run start:prod
+    pm2 start  npm -- run start
   environment:
       NODE_ENV: production
       ENVIRONMENT: production
       TYPEORM_CONNECTION: postgres
-      TYPEORM_ENTITIES: /root/dist/modules/domain/**/*.entity.js
+      TYPEORM_ENTITIES: "{{ lookup('env','TYPEORM_ENTITIES') }}"
       TYPEORM_HOST: "{{ lookup('env','TYPEORM_HOST') }}"
       TYPEORM_PORT: "{{ lookup('env','TYPEORM_PORT') }}"
       TYPEORM_USERNAME: "{{ lookup('env','TYPEORM_USERNAME') }}"
       TYPEORM_PASSWORD: "{{ lookup('env','TYPEORM_PASSWORD') }}"
       TYPEORM_DATABASE: "{{ lookup('env','TYPEORM_DATABASE') }}"
+- name: print message
+  debug:
+    msg: "{{ execute_node.stdout_lines }}"
+
+- name: "Set pm2 start as service"
+  become: yes
+  shell: |
+    env PATH=$PATH:/usr/local/bin pm2 startup -u ubuntu    
